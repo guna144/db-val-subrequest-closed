@@ -2,18 +2,27 @@ package ae.etisalat.dbvalsubrequestclosed.listener;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import ae.etisalat.dbvalsubrequestclosed.common.Constants;
+import ae.etisalat.dbvalsubrequestclosed.common.ServerProperties;
 import ae.etisalat.dbvalsubrequestclosed.component.DBListener;
 import ae.etisalat.dbvalsubrequestclosed.model.LogData;
+import io.zeebe.client.ZeebeClient;
 
 @Component
 public class SubrequestClosed extends DBListener {
 	
 	private static Logger LOGGER = Logger.getLogger(SubrequestClosed.class.getName());
+	
+	@Autowired
+	private ServerProperties serverProperties;
+	
 	
 	private static String NAME = "Subrequest closed";
     private static String ENV = "PD";
@@ -45,10 +54,32 @@ public class SubrequestClosed extends DBListener {
 	@Override
     public void triggerNotification(LogData p_logData) {
         LOGGER.info("Notification: " + p_logData.toString());
+    	SubReq_Closed_Event(p_logData.getKey());
     }
     
 	@Scheduled(fixedRate=5000)
     public void checkSubrequestStatus() throws Exception {
 		super.checkSubrequestStatus();
+	}
+	
+	
+	private void SubReq_Closed_Event(String subRequestId){
+		
+		final ZeebeClient client = ZeebeClient.newClientBuilder()
+	            // change the contact point if needed
+	            .brokerContactPoint(serverProperties.getBroker())
+	            .build();
+	
+	        System.out.println("Connected...... Status 90");
+	        client.newPublishMessageCommand()
+		    		.messageName("MSG_SUBREQ_CLOSED")
+		    		.correlationKey(subRequestId) 
+		    		.timeToLive(Duration.ofMinutes(1))
+		    		.send()
+		    		.join();
+	
+	        System.out.println("Message sent - Name: " + "MSG_SUBREQ_CLOSED" + ", Key: " + subRequestId);
+	        client.close();
+	        System.out.println("Closed.");
 	}
 }

@@ -31,7 +31,68 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.zeebe</groupId>
+			<artifactId>zeebe-client-java</artifactId>
+			<version>${version.zeebe}</version>
+		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/io.zeebe/zeebe-util -->
+		<dependency>
+		    <groupId>io.zeebe</groupId>
+		    <artifactId>zeebe-util</artifactId>
+		    <version>0.17.0</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/io.zeebe/zeebe-protocol-impl -->
+		<dependency>
+		    <groupId>io.zeebe</groupId>
+		    <artifactId>zeebe-protocol-impl</artifactId>
+		    <version>0.17.0</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/io.zeebe/zeebe-broker-core -->
+		<dependency>
+		    <groupId>io.zeebe</groupId>
+		    <artifactId>zeebe-broker-core</artifactId>
+		    <version>0.17.0</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/io.zeebe/zeebe-exporter-api -->
+		<dependency>
+		    <groupId>io.zeebe</groupId>
+		    <artifactId>zeebe-exporter-api</artifactId>
+		    <version>0.17.0</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
+		<!-- <dependency>
+		    <groupId>org.assertj</groupId>
+		    <artifactId>assertj-core</artifactId>
+		    <version>1.0.0</version>
+		    <scope>test</scope>
+		</dependency> -->
+
+		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+	<!-- 	<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <version>1.4.199</version>
+		    <scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${version.log4j}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${version.log4j}</version>
+		</dependency> -->
 		<!-- https://mvnrepository.com/artifact/oracle/ojdbc6 -->
 		<dependency>
 		    <groupId>oracle</groupId>

@@ -5,6 +5,7 @@ package ae.etisalat.dbvalsubrequestclosed.db;
 
 import java.sql.SQLException;
 import java.util.Properties;
+
 import oracle.jdbc.driver.OracleConnection;
 import oracle.jdbc.driver.OracleDriver;
 
@@ -33,6 +34,31 @@ public class DBConnection {
 	static final String RITRES_DEV_USERNAME = "rit_results";
 	static final String RITRES_DEV_PASSWORD = "rit_results";
 	static final String URL_RITRES = "jdbc:oracle:thin:@AS753-DX-BDB-05.etisalat.corp.ae:1521:RITRES";
+	
+	
+	// COMS Database
+	static final String USERNAME_COMSPD = "COMSPD";
+	static final String PASSWORD_COMSPD = "comspd2017";
+	static final String URL_COMSPD = "jdbc:oracle:thin:@au1373:1521:COMSPD";
+	
+	// LWM Database
+	static final String USERNAME_LWMPD = "LWMPD";
+	static final String PASSWORD_LWMPD = "lwmpd$123";
+	static final String URL_LWMPD = "jdbc:oracle:thin:@au1411:1521:LWMPD";
+
+	
+	// RTF Database
+	static final String USERNAME_RTFPD = "rtfsit";
+	static final String PASSWORD_RTFPD = "rtfsit$123";
+	static final String URL_RTFPD = "jdbc:oracle:thin:@AU2819:1521:RTFDEV";
+	
+
+	// CMDS Database
+	static final String USERNAME_CMDSPD = "CMDSPD";
+	static final String PASSWORD_CMDSPD = "cmdspd77";
+	static final String URL_CMDSPD = "jdbc:oracle:thin:@au1377:1521:CMDSPD";
+	
+	
 	/**
 	 * @param args
 	 */
@@ -98,4 +124,39 @@ public class DBConnection {
 	}
 	
 
+//	COMS Database
+	public static OracleConnection connect_COMSPD() throws SQLException {
+		OracleDriver dr = new OracleDriver();
+		Properties prop = new Properties();
+		prop.setProperty("user", DBConnection.USERNAME_COMSPD);
+		prop.setProperty("password", DBConnection.PASSWORD_COMSPD);
+		return (OracleConnection) dr.connect(DBConnection.URL_COMSPD, prop);
+	}
+	
+//	LWM Database
+	public static OracleConnection connect_LWMPD() throws SQLException {
+		OracleDriver dr = new OracleDriver();
+		Properties prop = new Properties();
+		prop.setProperty("user", DBConnection.USERNAME_LWMPD);
+		prop.setProperty("password", DBConnection.PASSWORD_LWMPD);
+		return (OracleConnection) dr.connect(DBConnection.URL_LWMPD, prop);
+	}
+	
+//	RTF Database
+	public static OracleConnection connect_RTFPD() throws SQLException {
+		OracleDriver dr = new OracleDriver();
+		Properties prop = new Properties();
+		prop.setProperty("user", DBConnection.USERNAME_RTFPD);
+		prop.setProperty("password", DBConnection.PASSWORD_RTFPD);
+		return (OracleConnection) dr.connect(DBConnection.URL_RTFPD, prop);
+	}
+	
+//	CMDS Database
+	public static OracleConnection connect_CMDSPD() throws SQLException {
+		OracleDriver dr = new OracleDriver();
+		Properties prop = new Properties();
+		prop.setProperty("user", DBConnection.USERNAME_CMDSPD);
+		prop.setProperty("password", DBConnection.PASSWORD_CMDSPD);
+		return (OracleConnection) dr.connect(DBConnection.URL_CMDSPD, prop);
+	}
 }
