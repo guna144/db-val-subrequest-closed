@@ -44,7 +44,7 @@ public class DBListener {
 
           try {
 
-                    conn = DBConnection.connect_CBCMPD();
+                    conn = DBConnection.connect_CBCMRCDL();
                     st = conn.createStatement();
 
                     Date lastCheckedDate = new Date();

@@ -25,7 +25,7 @@ public class SubrequestClosed extends DBListener {
 	
 	
 	private static String NAME = "Subrequest closed";
-    private static String ENV = "PD";
+    private static String ENV = "RC";
     private static String EXPECTED_VALUE = "90";
     private static String QUERY = "SELECT SUBREQUEST_ID, STATUS, CREATED_DATE, MODIFIED_DATE "
       								+ "FROM T_SOH_SUBREQUEST "
