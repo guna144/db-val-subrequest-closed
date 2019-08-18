@@ -4,17 +4,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ae.etisalat.dbvalsubrequestclosed.common.ServerProperties;
 import ae.etisalat.dbvalsubrequestclosed.db.DBConnection;
 import ae.etisalat.dbvalsubrequestclosed.model.LogData;
+import io.zeebe.client.ZeebeClient;
 import oracle.jdbc.OracleConnection;
-
 
 public class DBListener {
 
 	private static Logger LOGGER = Logger.getLogger(DBListener.class.getName());
+	
+	@Autowired
+	private ServerProperties serverProperties;
 	
 	static String LISTENER_TYPE = "DB";
 	
@@ -28,6 +35,7 @@ public class DBListener {
     
     
     public DBListener(String p_name, String p_env, String p_expectedValue, String p_query) {
+    	serverProperties = new ServerProperties();
     	name = p_name;
     	env = p_env;
     	expectedValue = p_expectedValue;
@@ -54,7 +62,7 @@ public class DBListener {
 
                     while (rs.next()) {
     
-                          String key = getKey(rs);
+                          String key = getLogKey(rs);
                           String foundValue = getFoundValue(rs);
 
                           logData =  getLog(env, key);
@@ -64,7 +72,7 @@ public class DBListener {
                                logData = new LogData(LISTENER_TYPE, name, env, key, expectedValue, foundValue, lastCheckedDate, 0);
                                if(isExpectedFound(expectedValue, foundValue)) { // if value found as expected mark notification_sent and 
                                     logData.setNotificationSent(1);
-                                    triggerNotification(logData);
+                                    triggerNotification("MSG_SUBREQ_CLOSED", getNotificationKey(rs));
                                }
                                addToLog(logData);
                           
@@ -80,7 +88,7 @@ public class DBListener {
 
                                if(isExpectedFound(expectedValue, foundValue)) {
                                     logData.setNotificationSent(1);
-                                    triggerNotification(logData);
+                                    triggerNotification("MSG_SUBREQ_CLOSED", getNotificationKey(rs));
                                }
                                updateLog(logData);
                           }
@@ -100,7 +108,7 @@ public class DBListener {
     }
     
     
-    public String getKey(ResultSet p_rs) throws SQLException {
+    public String getLogKey(ResultSet p_rs) throws SQLException {
     	return null;
     }
     
@@ -113,11 +121,11 @@ public class DBListener {
     	return Boolean.FALSE;
     }
     
-    
-    public void triggerNotification(LogData p_logData) {
+    public String getNotificationKey(ResultSet p_rs) throws SQLException {
+    	return null;
     }
-
     
+
     private static int addToLog(LogData p_logData) throws Exception {
     	
 	      OracleConnection conn = null;
@@ -262,6 +270,48 @@ public class DBListener {
 
           return result;
     }
+    
+    
+    public void triggerNotification(String p_messageName, String p_correlationKey) {
+    	
+    	SubReq_Opened_Event(p_correlationKey);
+    	
+    	final ZeebeClient client = ZeebeClient.newClientBuilder()
+	            .brokerContactPoint(serverProperties.getBroker())
+	            .build();
+	
+	        System.out.println("serverProperties.getBroker()  : " +serverProperties.getBroker()+ " Connected...... Status 90");
+	        client.newPublishMessageCommand()
+		    		.messageName(p_messageName)
+		    		.correlationKey(p_correlationKey) 
+		    		.timeToLive(Duration.ofMinutes(1))
+		    		.send()
+		    		.join();
+	
+	        System.out.println("Message sent - Name: " + p_messageName + ", Key: " + p_correlationKey);
+	        client.close();
+	        System.out.println("Closed.");
+    }
+    
+    
+    private void SubReq_Opened_Event(String subRequestId){
+    	
+    	final ZeebeClient client = ZeebeClient.newClientBuilder()
+	            // change the contact point if needed
+    			.brokerContactPoint(serverProperties.getBroker())
+	            .build();
 
+    	    System.out.println("serverProperties.getBroker()  : " +serverProperties.getBroker()+ " Connected...... Status 87 - new instance creation");
+            client.newPublishMessageCommand()
+            		.messageName("MSG_SUBREQ_OPENED_GSM_POSTPAID")
+            		.correlationKey("")
+            		.variables("{\"P_SUBREQ_ID\": "+subRequestId+" }")
+            		.send()
+            		.join();
+
+            System.out.println("Message sent - Name: " + "MSG_SUBREQ_OPENED_GSM_POSTPAID" + ", Key: " + subRequestId);
+	        client.close();
+	        System.out.println("Closed.");
+    }
 
 }
