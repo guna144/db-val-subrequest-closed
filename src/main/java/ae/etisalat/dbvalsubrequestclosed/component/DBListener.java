@@ -305,7 +305,9 @@ public class DBListener {
             client.newPublishMessageCommand()
             		.messageName("MSG_SUBREQ_OPENED_GSM_POSTPAID")
             		.correlationKey("")
-            		.variables("{\"P_SUBREQ_ID\": "+subRequestId+" }")
+            		.variables("{\"P_SUBREQ_ID\": "+subRequestId+", "
+            				+ " \"input1\": 2, "
+            				+ " \"input2\": 5}")
             		.send()
             		.join();
 
